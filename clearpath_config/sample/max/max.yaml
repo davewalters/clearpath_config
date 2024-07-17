@@ -1,0 +1,38 @@
+serial_number: max-0000
+version: 0
+system:
+  hosts:
+    - hostname: rpi-max-0000
+      ip: 192.168.1.76
+  ros2:
+    namespace: max_0000
+platform:
+  attachments:
+  battery:
+    model: MB20TXU
+    configuration: S2P1
+sensors:
+  gps:
+    - model: ardusimple_RTKLite
+      urdf_enabled: true
+      launch_enabled: True
+      parent: base_link
+      xyz: [0.0, 0.0, 0.60]
+      rpy: [0.0, 0.0, 0.0]
+      ros_parameters:
+        nmea_navsat_driver:
+          frame_id: gps_0_link
+          port: "/dev/designatwork/gps_0"
+          baud: 38400
+    - model: ardusimple_RTKLite
+      urdf_enabled: true
+      launch_enabled: True
+      parent: base_link
+      xyz: [1.2, 0.0, 0.60]
+      rpy: [0.0, 0.0, 0.0]
+      ros_parameters:
+        nmea_navsat_driver:
+          frame_id: gps_1_link
+          port: "/dev/designatwork/gps_1"
+          baud: 38400
+ 
