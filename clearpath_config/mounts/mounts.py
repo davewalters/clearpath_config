@@ -35,6 +35,7 @@ from clearpath_config.mounts.types.pacs import PACS
 from clearpath_config.mounts.types.post import Post
 from clearpath_config.mounts.types.sick import SICKStand
 from clearpath_config.mounts.types.disk import Disk
+from clearpath_config.mounts.types.boss_male import BossMale
 from typing import List
 
 
@@ -43,12 +44,14 @@ class Mount():
     FLIR_PTU = FlirPTU.MOUNT_MODEL
     PACS_RISER = PACS.Riser.MOUNT_MODEL
     PACS_BRACKET = PACS.Bracket.MOUNT_MODEL
+    BOSS_MALE = BossMale.MOUNT_MODEL
 
     MODEL = {
         FATH_PIVOT: FathPivot,
         FLIR_PTU: FlirPTU,
         PACS_RISER: PACS.Riser,
-        PACS_BRACKET: PACS.Bracket
+        PACS_BRACKET: PACS.Bracket,
+        BOSS_MALE: BossMale,
     }
 
     def __new__(cls, model: str) -> BaseMount:
@@ -81,6 +84,7 @@ class MountsConfig(BaseConfig):
     SICK = SICKStand.MOUNT_MODEL
     POST = Post.MOUNT_MODEL
     DISK = Disk.MOUNT_MODEL
+    BOSS_MALE = BossMale.MOUNT_MODEL
 
     TEMPLATE = {
         MOUNTS: {
@@ -90,6 +94,7 @@ class MountsConfig(BaseConfig):
             SICK: SICK,
             POST: POST,
             DISK: DISK,
+            BOSS_MALE: BOSS_MALE,
         }
     }
 
@@ -102,6 +107,7 @@ class MountsConfig(BaseConfig):
         SICK: [],
         POST: [],
         DISK: [],
+        BOSS_MALE: [],
     }
 
     def __init__(
@@ -113,6 +119,7 @@ class MountsConfig(BaseConfig):
             sick_stand: List[SICKStand] = DEFAULTS[SICK],
             post: List[Post] = DEFAULTS[POST],
             disk: List[Disk] = DEFAULTS[DISK],
+            boss_male: List[BossMale] = DEFAULTS[BOSS_MALE],
             ) -> None:
         # Initialization
         self.bracket = bracket
@@ -121,6 +128,7 @@ class MountsConfig(BaseConfig):
         self.sick_stand = sick_stand
         self.post = post
         self.disk = disk
+        self.boss_male = boss_male
         # Template
         template = {
             self.KEYS[self.BRACKET]: MountsConfig.bracket,
@@ -129,6 +137,7 @@ class MountsConfig(BaseConfig):
             self.KEYS[self.SICK]: MountsConfig.sick_stand,
             self.KEYS[self.POST]: MountsConfig.post,
             self.KEYS[self.DISK]: MountsConfig.disk,
+            self.KEYS[self.BOSS_MALE]: MountsConfig.boss_male,
         }
         super().__init__(template, config, self.MOUNTS)
 
@@ -269,6 +278,29 @@ class MountsConfig(BaseConfig):
             mount_list.append(mount)
         mounts.set_all(mount_list)
         self._disk = mounts
+        
+    @property
+    def boss_male(self) -> OrderedListConfig:
+        self.set_config_param(
+            key=self.KEYS[self.BOSS_MALE],
+            value=self._disk.to_dict()
+        )
+        return self._boss_male
+    
+    @boss_male.setter
+    def boss_male(self, value: List[dict]) -> None:
+        assert isinstance(value, list), (
+            "Mounts must be list of 'dict'")
+        assert all([isinstance(i, dict) for i in value]), (
+            "Mounts must be list of 'dict'")
+        mounts = MountListConfig()
+        mount_list = []
+        for d in value:
+            mount = BossMale()
+            mount.from_dict(d)
+            mount_list.append(mount)
+        mounts.set_all(mount_list)
+        self._boss_male = mounts
 
     # Get All Mounts
     def get_all_mounts(self) -> List[BaseMount]:
@@ -279,4 +311,5 @@ class MountsConfig(BaseConfig):
         mounts.extend(self.sick_stand.get_all())
         mounts.extend(self.post.get_all())
         mounts.extend(self.disk.get_all())
+        mounts.extend(self.boss_male.get_all())
         return mounts

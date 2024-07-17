@@ -25,84 +25,44 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-class PACSProfile:
+from clearpath_config.common.types.accessory import Accessory
+from clearpath_config.mounts.types.mount import BaseMount
+from typing import List
+
+
+class BossMale(BaseMount):
+    MOUNT_MODEL = "boss_male"
+    UNC_58 = "UNC_58"
+    MODELS = [UNC_58,]
+
     def __init__(
             self,
-            rows: int,
-            columns: int
+            idx: int = None,
+            name: str = None,
+            model: str = UNC_58,
+            parent: str = Accessory.PARENT,
+            xyz: List[float] = Accessory.XYZ,
+            rpy: List[float] = Accessory.RPY
             ) -> None:
-        self.rows = rows
-        self.columns = columns
+        self.model = model
+        super().__init__(idx, name, parent, xyz, rpy)
 
+    def to_dict(self) -> dict:
+        d = super().to_dict()
+        d['model'] = self.get_model()
+        return d
 
-class IndexingProfile:
-    def __init__(
-            self,
-            camera: int = 0,
-            gps: int = 0,
-            imu: int = 0,
-            lidar2d: int = 0,
-            lidar3d: int = 0
-            ) -> None:
-        self.camera = camera
-        self.gps = gps
-        self.imu = imu
-        self.lidar2d = lidar2d
-        self.lidar3d = lidar3d
+    def from_dict(self, d: dict) -> None:
+        super().from_dict(d)
+        if 'model' in d:
+            self.set_model(d['model'])
 
+    def get_model(self) -> str:
+        return self.model
 
-# Platform
-# - all supported platforms
-class Platform:
-    # Dingo D V1
-    DD100 = "dd100"
-    # Dingo O V1
-    DO100 = "do100"
-    # Dingo D V1.5
-    DD150 = "dd150"
-    # Dingo D V1.5
-    DO150 = "d0150"
-    # Jackal V1
-    J100 = "j100"
-    # Husky V2
-    A200 = "a200"
-    # Ridgeback V1
-    R100 = "r100"
-    # Warthog V2
-    W200 = "w200"
-    # Genric Robot
-    GENERIC = "generic"
-    #Max - Yamaha Grizzly 450 ATV
-    MAX = "max"
-
-    ALL = [
-        DD100,
-        DO100,
-        DD150,
-        DO150,
-        J100,
-        A200,
-        R100,
-        W200,
-        GENERIC,
-        MAX,
-    ]
-
-    PACS = {
-        GENERIC: PACSProfile(rows=100, columns=100),
-        A200: PACSProfile(rows=8, columns=7),
-        J100: PACSProfile(rows=4, columns=2),
-        W200: PACSProfile(rows=100, columns=100),
-    }
-
-    INDEX = {
-        GENERIC: IndexingProfile(),
-        A200: IndexingProfile(),
-        DD100: IndexingProfile(imu=1),
-        DO100: IndexingProfile(imu=1),
-        DD150: IndexingProfile(imu=1),
-        DO150: IndexingProfile(imu=1),
-        J100: IndexingProfile(gps=1, imu=1),
-        W200: IndexingProfile(imu=1),
-        MAX: IndexingProfile(gps=2),
-    }
+    def set_model(self, model: str) -> None:
+        assert model in self.MODELS, " ".join([
+            "Unexpected boss_male model '%s'," % model,
+            "it must be one of the following: %s" % self.MODELS
+        ])
+        self.model = model

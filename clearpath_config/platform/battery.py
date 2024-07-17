@@ -52,6 +52,8 @@ class BatteryConfig(BaseConfig):
     NEC_ALM12V35 = "NEC_ALM12V35"
     VALENCE_U24_12XP = "VALENCE_U24_12XP"
     VALENCE_U27_12XP = "VALENCE_U27_12XP"
+    # MAX
+    MB20TXU = "MB20TXU"
 
     # Configurations
     CONFIGURATION = "configuration"
@@ -96,6 +98,9 @@ class BatteryConfig(BaseConfig):
             NEC_ALM12V35: [S4P3],
             VALENCE_U24_12XP: [S4P1],
             VALENCE_U27_12XP: [S4P1],
+        },
+        Platform.MAX: {
+            MB20TXU: [S2P1],
         },
     }
 
