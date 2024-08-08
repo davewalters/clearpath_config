@@ -5,7 +5,7 @@ system:
     - hostname: PC01
       ip: 192.168.1.235
   ros2:
-    namespace: max_0000
+    namespace: max
 platform:
   attachments:
   battery:
@@ -38,7 +38,7 @@ sensors:
     - model: ardusimple_RTKLite
       urdf_enabled: true
       launch_enabled: true
-      parent: boss_1_mount
+      parent: boss_male_1_mount
       xyz: [0.0, 0.0, 0.0485]
       rpy: [0.0, 0.0, 0.0]
       ros_parameters:
