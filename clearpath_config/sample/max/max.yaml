@@ -6,6 +6,10 @@ system:
       ip: 192.168.1.235
   ros2:
     namespace: max
+    domain_id: 0
+    middleware:
+      implementation: rmw_fastrtps_cpp
+      discovery: simple
 platform:
   attachments:
   battery:
