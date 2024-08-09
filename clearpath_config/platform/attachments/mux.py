@@ -36,6 +36,7 @@ from clearpath_config.platform.attachments.generic import GENERICAttachment
 from clearpath_config.platform.attachments.j100 import J100Attachment
 from clearpath_config.platform.attachments.w200 import W200Attachment
 from clearpath_config.platform.types.attachment import BaseAttachment
+from clearpath_config.platform.attachments.max import MaxAttachment
 
 
 class AttachmentsConfigMux:
@@ -48,6 +49,7 @@ class AttachmentsConfigMux:
         Platform.GENERIC: AttachmentsConfig(GENERICAttachment),
         Platform.J100: AttachmentsConfig(J100Attachment),
         Platform.W200: AttachmentsConfig(W200Attachment),
+        Platform.MAX: AttachmentsConfig(MaxAttachment),
     }
 
     def __new__(cls, platform: str, attachments: dict = None) -> AttachmentsConfig:

@@ -115,6 +115,18 @@ class ROSParameterDefaults:
         "platform_velocity_controller.angular.z.max_acceleration": 40.0,
         "platform_velocity_controller.angular.z.min_acceleration": -40.0,
     }
+    
+    MAX = {
+        "platform_velocity_controller.wheel_radius": 0.325,
+        "platform_velocity_controller.linear.x.max_velocity": 3.3,
+        "platform_velocity_controller.linear.x.min_velocity": -1.0,
+        "platform_velocity_controller.linear.x.max_acceleration": 1.0,
+        "platform_velocity_controller.linear.x.min_acceleration": -1.0,
+        "platform_velocity_controller.angular.z.max_velocity": 1.0,
+        "platform_velocity_controller.angular.z.min_velocity": -1.0,
+        "platform_velocity_controller.angular.z.max_acceleration": 1.0,
+        "platform_velocity_controller.angular.z.min_acceleration": -1.0,
+    }
 
     DEFAULTS = {
         Platform.A200: A200,
@@ -125,6 +137,7 @@ class ROSParameterDefaults:
         Platform.J100: J100,
         Platform.GENERIC: GENERIC,
         Platform.W200: W200,
+        Platform.MAX: MAX,
     }
 
     def __new__(cls, platform: str) -> dict:
