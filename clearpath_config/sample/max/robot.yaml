@@ -1,0 +1,56 @@
+serial_number: max-0000
+version: 0
+system:
+  hosts:
+    - hostname: PC01
+      ip: 192.168.1.235
+  ros2:
+    workspaces:
+      - "/home/dave/ros2_ws_localisation/install/setup.bash"
+    namespace: max
+    domain_id: 0
+    middleware:
+      implementation: rmw_fastrtps_cpp
+      discovery: simple
+platform:
+  attachments:
+  battery:
+    model: MB20TXU
+    configuration: S2P1
+mounts:
+  bracket:
+    - parent: base_link
+  boss_male_:
+    - parent: base_link
+      xyz: [-0.400, 0.0, 0.500]
+      rpy: [0.0, 0.0, 0.0]
+      model: UNC_58
+    - parent: base_link
+      xyz: [1.200, 0.0, 0.500]
+      rpy: [0.0, 0.0, 0.0]
+      model: UNC_58  
+sensors:
+  gps:
+    - model: ardusimple_RTKLite
+      urdf_enabled: true
+      launch_enabled: true
+      parent: boss_male_1_mount
+      xyz: [0.0, 0.0, 0.0485]
+      rpy: [0.0, 0.0, 0.0]
+      ros_parameters:
+        nmea_navsat_driver:
+          frame_id: gps_0_link
+          port: "/dev/designatwork/gps_0"
+          baud: 38400
+    - model: ardusimple_RTKLite
+      urdf_enabled: true
+      launch_enabled: true
+      parent: boss_male_2_mount
+      xyz: [0.0, 0.0, 0.0485]
+      rpy: [0.0, 0.0, 0.0]
+      ros_parameters:
+        nmea_navsat_driver:
+          frame_id: gps_1_link
+          port: "/dev/designatwork/gps_1"
+          baud: 38400
+ 

@@ -283,7 +283,7 @@ class MountsConfig(BaseConfig):
     def boss_male(self) -> OrderedListConfig:
         self.set_config_param(
             key=self.KEYS[self.BOSS_MALE],
-            value=self._disk.to_dict()
+            value=self._boss_male.to_dict()
         )
         return self._boss_male
     
