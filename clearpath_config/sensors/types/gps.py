@@ -295,6 +295,88 @@ class NMEA(BaseGPS):
         self._baud = baud
 
 
+class Ublox(BaseGPS):
+    SENSOR_MODEL = "ublox_gps"
+
+    FRAME_ID = "link"
+    PORT = "/dev/ttyUSB3"
+    BAUD = 460800
+
+    class ROS_PARAMETER_KEYS:
+        FRAME_ID = "ublox_gps.frame_id"
+        PORT = "ublox_gps.port"
+        BAUD = "ublox_gps.baud"
+
+    class TOPICS:
+        FIX = "fix"
+        NAME = {
+            FIX: "fix",
+        }
+        RATE = {
+            FIX: 60,
+        }
+
+    def __init__(
+            self,
+            idx: int = None,
+            name: str = None,
+            topic: str = BaseGPS.TOPIC,
+            frame_id: str = FRAME_ID,
+            port: str = PORT,
+            baud: int = BAUD,
+            urdf_enabled: bool = BaseSensor.URDF_ENABLED,
+            launch_enabled: bool = BaseSensor.LAUNCH_ENABLED,
+            ros_parameters: str = BaseSensor.ROS_PARAMETERS,
+            parent: str = Accessory.PARENT,
+            xyz: List[float] = Accessory.XYZ,
+            rpy: List[float] = Accessory.RPY
+            ) -> None:
+        # Port
+        self.port = port
+        # Baud
+        self.baud = baud
+        # ROS Paramater Template
+        ros_parameters_template = {
+            self.ROS_PARAMETER_KEYS.PORT: Ublox.port,
+            self.ROS_PARAMETER_KEYS.BAUD: Ublox.baud
+        }
+        
+        #print(f"gps.py: ros_parameters_template: {ros_parameters_template}")
+        #input()
+        
+        super().__init__(
+            idx,
+            name,
+            topic,
+            frame_id,
+            urdf_enabled,
+            launch_enabled,
+            ros_parameters,
+            ros_parameters_template,
+            parent,
+            xyz,
+            rpy
+        )
+
+    @property
+    def port(self) -> str:
+        return str(self._port)
+
+    @port.setter
+    def port(self, file: str) -> str:
+        self._port = File(str(file))
+
+    @property
+    def baud(self) -> int:
+        return self._baud
+
+    @baud.setter
+    def baud(self, baud: int) -> None:
+        assert isinstance(baud, int), ("Baud must be of type 'int'.")
+        assert baud >= 0, ("Baud must be positive integer.")
+        self._baud = baud
+
+
 class Garmin18x(NMEA):
     SENSOR_MODEL = "garmin_18x"
 
@@ -405,12 +487,12 @@ class NovatelSmart7(NMEA):
             rpy
         )
 
-class ArduSimpleRTKLite(NMEA):
+class ArduSimpleRTKLite(Ublox):
     SENSOR_MODEL = "ardusimple_RTKLite"
 
     FRAME_ID = "link"
-    PORT = "/dev/ttyACM0"
-    BAUD = 115200
+    PORT = "/dev/ttyUSB2"
+    BAUD = 460800
 
     def __init__(
             self,
