@@ -33,6 +33,8 @@ from clearpath_config.common.utils.dictionary import extend_flat_dict
 from clearpath_config.sensors.types.sensor import BaseSensor
 from typing import List
 
+import rclpy
+from rclpy.node import Node
 
 class BaseGPS(BaseSensor):
     SENSOR_TYPE = "gps"
@@ -296,12 +298,13 @@ class NMEA(BaseGPS):
 
 
 class Ublox(BaseGPS):
+            
     SENSOR_MODEL = "ublox_gps"
 
     FRAME_ID = "link"
     DEVICE = "/dev/ttyUSB0"
     UART1_BAUDRATE = 38400
-    RATE = 5
+    RATE = 4.0
     DYNAMIC_MODEL = "portable"
     ENABLE_PPP = False
     TMODE3 = 0
@@ -335,49 +338,44 @@ class Ublox(BaseGPS):
 
     class TOPICS:
         FIX = "fix"
-        FIX_VELOCITY = "fix_velocity"
-        
         NAME = {
             FIX: "fix",
-            FIX_VELOCITY: "fix_velocity",
         }
-        
-        RATES = {
-            FIX: 60,
-            FIX_VELOCITY: 60,
+        RATE = {
+            FIX: 4,
         }
         
     def __init__(
             self,
             idx: int = None,
             name: str = None,
-            topics: dict = None,
+            topic: str = BaseGPS.TOPIC,
             frame_id: str = FRAME_ID,
             urdf_enabled: bool = BaseSensor.URDF_ENABLED,
             launch_enabled: bool = BaseSensor.LAUNCH_ENABLED,
-            ros_parameters: str = BaseSensor.ROS_PARAMETERS,
+            ros_parameters: dict = BaseSensor.ROS_PARAMETERS,
             parent: str = Accessory.PARENT,
             xyz: List[float] = Accessory.XYZ,
             rpy: List[float] = Accessory.RPY,
             device: str = DEVICE,
             uart1_baudrate: int = UART1_BAUDRATE,
-            rates: dict = None,
-            dynamic_model = DYNAMIC_MODEL,
-            enable_ppp = ENABLE_PPP,
-            tmode3 = TMODE3,
-            sv_in_reset = SV_IN_RESET,
-            sv_in_min_dur = SV_IN_MIN_DUR,
-            sv_in_acc_limit = SV_IN_ACC_LIMIT,
-            inf_all = INF_ALL,
-            publish_all = PUBLISH_ALL,
-            publish_nav_all = PUBLISH_NAV_ALL,
+            rate: float = RATE,
+            dynamic_model: str = DYNAMIC_MODEL,
+            enable_ppp: bool = ENABLE_PPP,
+            tmode3: int = TMODE3,
+            sv_in_reset: bool = SV_IN_RESET,
+            sv_in_min_dur: int = SV_IN_MIN_DUR,
+            sv_in_acc_limit: float = SV_IN_ACC_LIMIT,
+            inf_all: bool = INF_ALL,
+            publish_all: bool = PUBLISH_ALL,
+            publish_nav_all: bool = PUBLISH_NAV_ALL,
             ) -> None:
         # Device
         self.device = device
         # Baud
         self.uart1_baudrate = uart1_baudrate
         # Publishing Rate [Hz]
-        self.rates = rates if rates else self.TOPICS.RATES
+        self.rate = rate
         # Dynamic Model
         self.dynamic_model = dynamic_model
         # Precise Positioning
@@ -396,16 +394,12 @@ class Ublox(BaseGPS):
         self.publish_all = publish_all
         # Publish all nav_msgs
         self.publish_nav_all = publish_nav_all
-        # Topics
-        self.topics = topics if topics else self.TOPICS.NAME
-        
-        
-        
+               
         # ROS Parameter Template
         ros_parameters_template = {
             self.ROS_PARAMETER_KEYS.DEVICE: Ublox.device,
             self.ROS_PARAMETER_KEYS.UART1_BAUDRATE: Ublox.uart1_baudrate,
-            #self.ROS_PARAMETER_KEYS.RATE: Ublox.rate,
+            self.ROS_PARAMETER_KEYS.RATE: Ublox.rate,
             self.ROS_PARAMETER_KEYS.DYNAMIC_MODEL: Ublox.dynamic_model,
             self.ROS_PARAMETER_KEYS.ENABLE_PPP: Ublox.enable_ppp,
             self.ROS_PARAMETER_KEYS.TMODE3: Ublox.tmode3,
@@ -423,7 +417,7 @@ class Ublox(BaseGPS):
         super().__init__(
             idx,
             name,
-            self.topics[self.TOPICS.FIX],
+            topic,
             frame_id,
             urdf_enabled,
             launch_enabled,
@@ -452,15 +446,15 @@ class Ublox(BaseGPS):
         assert uart1_baudrate >= 0, ("uart1_baudrate must be positive integer.")
         self._uart1_baudrate = uart1_baudrate
     
-    #@property
-    #def rate(self) -> int:
-    #    return self._rate
+    @property
+    def rate(self) -> float:
+        return self._rate
 
-    #@rate.setter
-    #def rate(self, rate: int) -> None:
-    #    assert isinstance(rate, int), ("rate must be of type 'int'.")
-    #    assert rate >= 0, ("rate must be positive integer.")
-    #    self._rate = rate
+    @rate.setter
+    def rate(self, rate: float) -> None:
+        assert isinstance(rate, float), ("rate must be of type 'float'.")
+        assert rate >= 0, ("rate must be positive float.")
+        self._rate = rate
         
     @property
     def dynamic_model(self) -> str:
@@ -500,13 +494,12 @@ class Ublox(BaseGPS):
         self._sv_in_reset = sv_in_reset
         
     @property
-    def sv_in_min_dur(self) -> float:
+    def sv_in_min_dur(self) -> int:
         return self._sv_in_min_dur
 
     @sv_in_min_dur.setter
-    def sv_in_min_dur(self, sv_in_min_dur: float) -> None:
-        assert isinstance(sv_in_min_dur, float), ("sv_in_dur must be of type 'float'.")
-        assert sv_in_min_dur >= 0, ("sv_in_min_dur must be >= 0.0.")
+    def sv_in_min_dur(self, sv_in_min_dur: int) -> None:
+        assert sv_in_min_dur >= 0, ("sv_in_min_dur must be >= 0.")
         self._sv_in_min_dur = sv_in_min_dur
     
     @property
@@ -659,25 +652,23 @@ class NovatelSmart7(NMEA):
 
 class ArduSimpleRTKLite(Ublox):
     SENSOR_MODEL = "ardusimple_RTKLite"
-
     FRAME_ID = "link"
-    PORT = "/dev/ttyUSB2"
-
+  
     def __init__(
             self,
             idx: int = None,
             name: str = None,
-            topics: dict = None,
+            topic: str = BaseGPS.TOPIC,
             frame_id: str = FRAME_ID,
             urdf_enabled: bool = BaseSensor.URDF_ENABLED,
             launch_enabled: bool = BaseSensor.LAUNCH_ENABLED,
-            ros_parameters: str = BaseSensor.ROS_PARAMETERS,
+            ros_parameters: dict = Ublox.ROS_PARAMETERS,
             parent: str = Accessory.PARENT,
             xyz: List[float] = Accessory.XYZ,
             rpy: List[float] = Accessory.RPY,
             device: str = Ublox.DEVICE,
             uart1_baudrate: int = Ublox.UART1_BAUDRATE,
-            rates: dict = None,
+            rate: float = Ublox.RATE,
             dynamic_model = Ublox.DYNAMIC_MODEL,
             enable_ppp = Ublox.ENABLE_PPP,
             tmode3 = Ublox.TMODE3,
@@ -687,11 +678,11 @@ class ArduSimpleRTKLite(Ublox):
             inf_all = Ublox.INF_ALL,
             publish_all = Ublox.PUBLISH_ALL,
             publish_nav_all = Ublox.PUBLISH_NAV_ALL,
-            ) -> None:
+            ) -> None: 
         super().__init__(
             idx,
             name,
-            topics,
+            topic,
             frame_id,
             urdf_enabled,
             launch_enabled,
@@ -701,7 +692,7 @@ class ArduSimpleRTKLite(Ublox):
             rpy,
             device,
             uart1_baudrate,
-            rates,
+            rate,
             dynamic_model,
             enable_ppp,
             tmode3,
