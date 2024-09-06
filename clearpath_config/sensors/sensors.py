@@ -43,7 +43,7 @@ from clearpath_config.sensors.types.gps import (
     Garmin18x,
     NovatelSmart6,
     NovatelSmart7,
-    ArduSimpleRTKLite,
+    ArdusimpleRTKLite,
 )
 from clearpath_config.sensors.types.imu import (
     BaseIMU,
@@ -118,14 +118,14 @@ class GlobalPositioningSystem():
     GARMIN_18X = Garmin18x.SENSOR_MODEL
     NOVATEL_SMART6 = NovatelSmart6.SENSOR_MODEL
     NOVATEL_SMART7 = NovatelSmart7.SENSOR_MODEL
-    ARDUSIMPLE_RTKLITE = ArduSimpleRTKLite.SENSOR_MODEL
+    ARDUSIMPLE_RTKLITE = ArdusimpleRTKLite.SENSOR_MODEL
 
     MODEL = {
         SWIFTNAV_DURO: SwiftNavDuro,
         GARMIN_18X: Garmin18x,
         NOVATEL_SMART6: NovatelSmart6,
         NOVATEL_SMART7: NovatelSmart7,
-        ARDUSIMPLE_RTKLITE: ArduSimpleRTKLite,
+        ARDUSIMPLE_RTKLITE: ArdusimpleRTKLite,
     }
 
     @classmethod

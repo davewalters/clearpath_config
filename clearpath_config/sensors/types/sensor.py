@@ -34,6 +34,7 @@ from clearpath_config.common.utils.dictionary import (
 from typing import List, Callable
 import copy
 import os
+import sys
 
 
 class BaseSensor(IndexedAccessory):
@@ -233,6 +234,7 @@ class BaseSensor(IndexedAccessory):
         self.ros_parameters = d
 
     def get_ros_parameters(self) -> dict:
+        print(f"self.ros_parameters: {self.ros_parameters}", file=sys.stderr)
         return self.ros_parameters
 
     def setter(self, prop: property):
