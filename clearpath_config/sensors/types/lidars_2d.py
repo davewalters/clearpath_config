@@ -102,7 +102,10 @@ class BaseLidar2D(BaseSensor):
             self.ROS_PARAMETER_KEYS.MIN_ANGLE: BaseLidar2D.min_angle,
             self.ROS_PARAMETER_KEYS.MAX_ANGLE: BaseLidar2D.max_angle,
         }
+        #print(f"BaseLidar2D: template: {template}")
         ros_parameters_template = extend_flat_dict(template, ros_parameters_template)
+        #print(f"BaseLidar2D: template: {template}")
+        print(f"BaseLidar2D: ros_parameters_template: {ros_parameters_template}")
         # Initialize Base
         super().__init__(
             idx,
@@ -260,6 +263,8 @@ class HokuyoUST(BaseLidar2D):
             rpy: List[float] = Accessory.RPY
             ) -> None:
         ros_parameters_template = BaseSensor.ROS_PARAMETERS_TEMPLATE
+        print(f"HokuyoUST: ros_parameters_template: {ros_parameters_template}")
+        
         super().__init__(
             idx,
             name,

@@ -43,6 +43,7 @@ from clearpath_config.sensors.types.gps import (
     Garmin18x,
     NovatelSmart6,
     NovatelSmart7,
+    Ublox,
     ArdusimpleRTKLite,
 )
 from clearpath_config.sensors.types.imu import (
