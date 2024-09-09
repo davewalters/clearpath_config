@@ -310,7 +310,7 @@ class Ublox(BaseGPS):
     TMODE3 = 0
     SV_IN_RESET = False
     SV_IN_MIN_DUR = 300
-    SV_IN_ACC_LIMIT = 3.0
+    SV_IN_ACC_LIM = 3.0
     INF_ALL = True
     PUBLISH_ALL = False
     PUBLISH_NAV_ALL = True
@@ -330,7 +330,7 @@ class Ublox(BaseGPS):
         TMODE3 = "ublox_gps_node.tmode3"
         SV_IN_RESET = "ublox_gps_node.sv_in.reset"
         SV_IN_MIN_DUR = "ublox_gps_node.sv_in.min_dur"
-        SV_IN_ACC_LIMIT = "ublox_gps_node.sv_in.acc_limit"
+        SV_IN_ACC_LIM = "ublox_gps_node.sv_in.acc_lim"
         INF_ALL = "ublox_gps_node.inf.all"
         PUBLISH_ALL = "ublox_gps_node.publish.all"
         PUBLISH_NAV_ALL = "ublox_gps_node.publish.nav.all"
@@ -358,7 +358,7 @@ class Ublox(BaseGPS):
             tmode3: int = TMODE3,
             sv_in_reset: bool = SV_IN_RESET,
             sv_in_min_dur: int = SV_IN_MIN_DUR,
-            sv_in_acc_limit: float = SV_IN_ACC_LIMIT,
+            sv_in_acc_lim: float = SV_IN_ACC_LIM,
             inf_all: bool = INF_ALL,
             publish_all: bool = PUBLISH_ALL,
             publish_nav_all: bool = PUBLISH_NAV_ALL,
@@ -372,8 +372,8 @@ class Ublox(BaseGPS):
             ) -> None:
                
         # Frame ID
-        #self.frame_id: str = self.FRAME_ID
-        #self.set_frame_id(frame_id)
+        self.frame_id: str = self.FRAME_ID
+        self.set_frame_id(frame_id)
         # Device
         self.device: str = self.DEVICE
         self.set_device(device)
@@ -399,8 +399,8 @@ class Ublox(BaseGPS):
         self.sv_in_min_dur: int = int(self.SV_IN_MIN_DUR)
         self.set_sv_in_min_dur(sv_in_min_dur)
         # Survey-in accuracy limit
-        self.sv_in_acc_limit: float = float(self.SV_IN_ACC_LIMIT)
-        self.set_sv_in_acc_limit(sv_in_acc_limit)
+        self.sv_in_acc_lim: float = float(self.SV_IN_ACC_LIM)
+        self.set_sv_in_acc_lim(sv_in_acc_lim)
         # Publish all info messages to console
         self.inf_all: bool = self.INF_ALL
         self.set_inf_all(inf_all)
@@ -413,7 +413,7 @@ class Ublox(BaseGPS):
                
         # ROS Parameter Template
         template = {
-            #self.ROS_PARAMETER_KEYS.FRAME_ID: Ublox.frame_id,
+            self.ROS_PARAMETER_KEYS.FRAME_ID: Ublox.frame_id,
             self.ROS_PARAMETER_KEYS.DEVICE: Ublox.device,
             self.ROS_PARAMETER_KEYS.UART1_BAUDRATE: Ublox.uart1_baudrate,
             self.ROS_PARAMETER_KEYS.MSG_RATE: Ublox.msg_rate,
@@ -422,7 +422,7 @@ class Ublox(BaseGPS):
             self.ROS_PARAMETER_KEYS.TMODE3: Ublox.tmode3,
             self.ROS_PARAMETER_KEYS.SV_IN_RESET: Ublox.sv_in_reset,
             self.ROS_PARAMETER_KEYS.SV_IN_MIN_DUR: Ublox.sv_in_min_dur,
-            self.ROS_PARAMETER_KEYS.SV_IN_ACC_LIMIT: Ublox.sv_in_acc_limit,
+            self.ROS_PARAMETER_KEYS.SV_IN_ACC_LIM: Ublox.sv_in_acc_lim,
             self.ROS_PARAMETER_KEYS.INF_ALL: Ublox.inf_all,
             self.ROS_PARAMETER_KEYS.PUBLISH_ALL: Ublox.publish_all,
             self.ROS_PARAMETER_KEYS.PUBLISH_NAV_ALL: Ublox.publish_nav_all,
@@ -592,20 +592,20 @@ class Ublox(BaseGPS):
         self.sv_in_min_dur = sv_in_min_dur  
     
     @property
-    def sv_in_acc_limit(self) -> float:
-        return self._sv_in_acc_limit
+    def sv_in_acc_lim(self) -> float:
+        return self._sv_in_acc_lim
 
-    @sv_in_acc_limit.setter
-    def sv_in_acc_limit(self, sv_in_acc_limit: float) -> None:
-        #assert isinstance(sv_in_acc_limit, float), ("sv_in_acc_limit must be of type 'float'.")
-        #assert sv_in_acc_limit >= 0, ("sv_in_acc_limit must be >= 0.0.")
-        self._sv_in_acc_limit = sv_in_acc_limit
+    @sv_in_acc_lim.setter
+    def sv_in_acc_lim(self, sv_in_acc_lim: float) -> None:
+        assert isinstance(sv_in_acc_lim, float), ("sv_in_acc_lim must be of type 'float'.")
+        assert sv_in_acc_lim >= 0, ("sv_in_acc_lim must be >= 0.0.")
+        self._sv_in_acc_lim = sv_in_acc_lim
         
-    def get_sv_in_acc_limit(self) -> float:
-        return float(self.sv_in_acc_limit)
+    def get_sv_in_acc_lim(self) -> float:
+        return float(self.sv_in_acc_lim)
     
-    def set_sv_in_acc_limit(self, sv_in_acc_limit: float) -> None:
-        self.sv_in_acc_limit = sv_in_acc_limit   
+    def set_sv_in_acc_lim(self, sv_in_acc_lim: float) -> None:
+        self.sv_in_acc_lim = sv_in_acc_lim   
          
     @property
     def inf_all(self) -> bool:
@@ -613,7 +613,7 @@ class Ublox(BaseGPS):
         
     @inf_all.setter
     def inf_all(self, inf_all: bool) -> None:
-        #assert isinstance(inf_all, bool), ("inf_all must be of type 'bool'.")
+        assert isinstance(inf_all, bool), ("inf_all must be of type 'bool'.")
         self._inf_all = inf_all
     
     def get_inf_all(self) -> bool:
@@ -628,7 +628,7 @@ class Ublox(BaseGPS):
         
     @publish_all.setter
     def publish_all(self, publish_all: bool) -> None:
-        #assert isinstance(publish_all, bool), ("publish_all must be of type 'bool'.")
+        assert isinstance(publish_all, bool), ("publish_all must be of type 'bool'.")
         self._publish_all = publish_all
         
     def get_publish_all(self) -> bool:
@@ -643,7 +643,7 @@ class Ublox(BaseGPS):
         
     @publish_nav_all.setter
     def publish_nav_all(self, publish_nav_all: bool) -> None:
-        #assert isinstance(publish_nav_all, bool), ("publish_nav_all must be of type 'bool'.")
+        assert isinstance(publish_nav_all, bool), ("publish_nav_all must be of type 'bool'.")
         self._publish_nav_all = publish_nav_all
         
     def get_publish_nav_all(self) -> bool:
@@ -775,7 +775,7 @@ class ArdusimpleRTKLite(Ublox):
     TMODE3 = 0
     SV_IN_RESET = False
     SV_IN_MIN_DUR = 300
-    SV_IN_ACC_LIMIT = 3.0
+    SV_IN_ACC_LIM = 3.0
     INF_ALL = True
     PUBLISH_ALL = False
     PUBLISH_NAV_ALL = True
@@ -790,7 +790,7 @@ class ArdusimpleRTKLite(Ublox):
         TMODE3 = "ublox_gps_node.tmode3"
         SV_IN_RESET = "ublox_gps_node.sv_in.reset"
         SV_IN_MIN_DUR = "ublox_gps_node.sv_in.min_dur"
-        SV_IN_ACC_LIMIT = "ublox_gps_node.sv_in.acc_limit"
+        SV_IN_ACC_LIM = "ublox_gps_node.sv_in.acc_lim"
         INF_ALL = "ublox_gps_node.inf.all"
         PUBLISH_ALL = "ublox_gps_node.publish.all"
         PUBLISH_NAV_ALL = "ublox_gps_node.publish.nav.all"
@@ -819,7 +819,7 @@ class ArdusimpleRTKLite(Ublox):
             tmode3: int = TMODE3,
             sv_in_reset: bool = SV_IN_RESET,
             sv_in_min_dur: int = SV_IN_MIN_DUR,
-            sv_in_acc_limit: float = SV_IN_ACC_LIMIT,
+            sv_in_acc_lim: float = SV_IN_ACC_LIM,
             inf_all: bool = INF_ALL,
             publish_all: bool = PUBLISH_ALL,
             publish_nav_all: bool = PUBLISH_NAV_ALL,
@@ -832,7 +832,7 @@ class ArdusimpleRTKLite(Ublox):
         ) -> None:
     
         ros_parameters_template = BaseSensor.ROS_PARAMETERS_TEMPLATE
-        print(f"ArdusimpleRTKLite: ros_parameters_template: {ros_parameters_template}")      
+        #print(f"ArdusimpleRTKLite: ros_parameters_template: {ros_parameters_template}")      
         super().__init__(
             idx,
             name,
@@ -846,7 +846,7 @@ class ArdusimpleRTKLite(Ublox):
             tmode3,
             sv_in_reset,
             sv_in_min_dur,
-            sv_in_acc_limit,
+            sv_in_acc_lim,
             inf_all,
             publish_all,
             publish_nav_all,
@@ -858,5 +858,5 @@ class ArdusimpleRTKLite(Ublox):
             xyz,
             rpy  
         )
-        print(f"ArdsimpleRTKLite: msg_rate: {self.msg_rate}")
-        print(f"ArdusimpleRTKLite: ros_parameters_template: {ros_parameters_template}")
+        #print(f"ArdsimpleRTKLite: msg_rate: {self.msg_rate}")
+        #print(f"ArdusimpleRTKLite: ros_parameters_template: {ros_parameters_template}")
